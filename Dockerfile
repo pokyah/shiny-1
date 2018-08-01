@@ -1,6 +1,6 @@
 FROM r-base:latest
 
-MAINTAINER Winston Chang "winston@rstudio.com"
+MAINTAINER Thomas Goossens "hello.pokyah@gmail.com"
 
 ## Install dependencies and Download and install shiny server
 
@@ -9,6 +9,14 @@ MAINTAINER Winston Chang "winston@rstudio.com"
 
 RUN apt-get update && apt-get install -y -t unstable \
     sudo \
+    libudunits2-dev \
+    units \
+    libxt-dev \
+    libssl-dev \
+    libxml2 \
+    libxml2-dev \
+    gdal-bin \
+    libgdal-dev \
     gdebi-core \
     pandoc \
     pandoc-citeproc \
@@ -35,5 +43,9 @@ COPY shiny-server.sh /usr/bin/shiny-server.sh
 ## http://docs.rstudio.com/shiny-server/
 
 # COPY shiny-customized.config /etc/shiny-server/shiny-server.conf
+
+RUN R -e "install.packages(c('Rcpp', 'devtools', 'shiny', 'rmarkdown'), repos='http://cran.rstudio.com/')"
+
+RUN R -e "devtools::install_github('pokyah/defHydWal', ref='dockerized', force=TRUE)"
 
 CMD ["/usr/bin/shiny-server.sh"]
