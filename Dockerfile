@@ -44,8 +44,12 @@ COPY shiny-server.sh /usr/bin/shiny-server.sh
 
 # COPY shiny-customized.config /etc/shiny-server/shiny-server.conf
 
-RUN R -e "install.packages(c('Rcpp', 'devtools', 'shiny', 'rmarkdown'), repos='http://cran.rstudio.com/')"
+# RUN R -e "install.packages(c('Rcpp', 'devtools', 'shiny', 'rmarkdown'), repos='http://cran.rstudio.com/')"
 
-RUN R -e "devtools::install_github('pokyah/defHydWal', ref='dockerized', force=TRUE)"
+RUN su - -c "R -e \"install.packages(c('Rcpp', 'devtools', 'shiny', 'rmarkdown'), repos='http://cran.rstudio.com/')\""
+
+RUN su - -c "R -e \"devtools::install_github('pokyah/defHydWal', ref='dockerized', force=TRUE)\""
+
+# RUN su - -c "R -e \"devtools::install_github('pokyah/defHydWal', ref='dockerized', force=TRUE)\"" &  chown -R shiny:shiny /usr/local/lib/R/site-library/defHydWal/ & systemctl restart shiny-server
 
 CMD ["/usr/bin/shiny-server.sh"]
